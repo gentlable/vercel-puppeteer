@@ -1,10 +1,4 @@
 {
-  "functions": {
-    "app/**/*.js": {
-      "memory": 512,
-      "maxDuration": 30
-    }
-  },
   "builds": [
     {
       "src": "app/**/*.js",
@@ -12,7 +6,9 @@
       "config": {
         "includeFiles": [
           "node_modules/**"
-        ]
+        ],
+        "maxDuration": 30,
+        "memory": 512
       }
     }
   ]
