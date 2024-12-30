@@ -54,8 +54,12 @@ export async function generatePDF() {
               </body>
           </html>
       `;
-      
-      await page.setContent(html);
+            
+      // フォントの読み込みを待つ
+      await page.setContent(html, {
+        waitUntil: ['networkidle0', 'load', 'domcontentloaded']
+  });
+  
       const pdf = await page.pdf({
           format: 'a4',
           printBackground: true
