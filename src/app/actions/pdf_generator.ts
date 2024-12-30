@@ -39,14 +39,14 @@ export async function generatePDF() {
       
       const html = `
           <html lang="ja" >
-              <style>
-                @font-face {
-                    font-family: 'IPAexGothic';
-                    src: url('https://cdn.jsdelivr.net/npm/@cjpatoilo/ipaexgothic-fonts@latest/fonts/ipaexg.ttf') format('truetype');
-                }
-                body {
-                    font-family: 'IPAexGothic', sans-serif;
-                }
+            <style>
+              @font-face {
+                font-family: 'Noto Sans JP';
+                src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+              }
+              body {
+                font-family: 'Noto Sans JP', sans-serif;
+              }
             </style>
               <body>
                   <h1>テストページ1</h1>
