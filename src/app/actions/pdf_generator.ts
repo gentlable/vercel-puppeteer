@@ -49,7 +49,7 @@ export async function generatePDF() {
                 }
             </style>
               <body>
-                  <h1>テストページ</h1>
+                  <h1>テストページ1</h1>
                   <p>これはAWS Lambda用の設定でテスト実行しています。</p>
               </body>
           </html>
