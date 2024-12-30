@@ -16,24 +16,35 @@ export async function generatePDF() {
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
+            headless: chromium.headless,    
         });
     } else {
         // ローカル環境
         process.env.CHROMIUM_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
         
         browser = await puppeteer.launch({
-            args: chromium.args,
+            args: [...chromium.args, '--lang=ja', '--font-render-hinting=none', '--force-color-profile=srgb'],
             defaultViewport: chromium.defaultViewport,
             executablePath: process.env.CHROMIUM_PATH,
             headless: chromium.headless,
+            
         });
     }
 
       const page = await browser.newPage();
       
+      
       const html = `
           <html>
+              <style>
+                @font-face {
+                    font-family: 'IPAexGothic';
+                    src: url('https://cdn.jsdelivr.net/npm/@cjpatoilo/ipaexgothic-fonts@latest/fonts/ipaexg.ttf') format('truetype');
+                }
+                body {
+                    font-family: 'IPAexGothic', sans-serif;
+                }
+            </style>
               <body>
                   <h1>テストページ</h1>
                   <p>これはAWS Lambda用の設定でテスト実行しています。</p>
@@ -42,7 +53,6 @@ export async function generatePDF() {
       `;
       
       await page.setContent(html);
-      
       const pdf = await page.pdf({
           format: 'a4',
           printBackground: true
