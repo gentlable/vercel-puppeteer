@@ -32,10 +32,13 @@ export async function generatePDF() {
     }
 
       const page = await browser.newPage();
+      await page.setExtraHTTPHeaders({
+        'Accept-Language': 'ja-JP'
+      });
       
       
       const html = `
-          <html>
+          <html lang="ja" >
               <style>
                 @font-face {
                     font-family: 'IPAexGothic';
