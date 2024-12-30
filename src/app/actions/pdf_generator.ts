@@ -47,8 +47,6 @@ export async function generatePDF() {
           format: 'a4',
           printBackground: true
       });
-      
-      console.log('PDF生成完了');
 
       // PDF (Buffer) を Uint8Array に変換
       const uint8Array = new Uint8Array(pdf);
