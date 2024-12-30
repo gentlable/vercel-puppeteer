@@ -1,54 +1,67 @@
 'use server';
 
-import puppeteer from 'puppeteer';
+import chromium from '@sparticuz/chromium';
+import puppeteer from 'puppeteer-core';
 
 export async function generatePDF() {
-  // Puppeteerの起動
-  const browser = await puppeteer.launch({ headless: true });
-  // 新しいページを開く
-  const page = await browser.newPage();
+  const isLambda = process.env.AWS_LAMBDA_FUNCTION_VERSION || process.env.VERCEL;
 
-  // 日本語の簡単なHTMLコンテンツ
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html lang="ja">
-    <head>
-      <meta charset="UTF-8">
-      <title>サンプルPDF</title>
-    </head>
-    <body>
-      <h1>こんにちは、世界！</h1>
-      <p>これはサンプルPDFです。</p>
-    </body>
-    </html>
-  `;
-
-  // HTMLコンテンツをページに設定
-  await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-
-  // PDFを生成
-  const pdf = await page.pdf({
-    format: 'A4',
-    displayHeaderFooter: true,
-    headerTemplate: '<div style="font-size: 10px; margin-left: 30px;">サンプルヘッダー</div>',
-    footerTemplate: '<div style="font-size: 10px; margin-left: 30px;">ページ <span class="pageNumber"></span> / <span class="totalPages"></span></div>',
-    margin: {
-      top: '100px',
-      bottom: '100px',
-      left: '30px',
-      right: '30px'
+  let browser = null;
+    
+  try {
+        
+    if (isLambda) {
+        // Lambda/Vercel環境
+        browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
+        });
+    } else {
+        // ローカル環境
+        process.env.CHROMIUM_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+        
+        browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: process.env.CHROMIUM_PATH,
+            headless: chromium.headless,
+        });
     }
-  });
 
-  // Uint8ArrayをBufferに変換
-  const buffer = Buffer.from(pdf);
+      const page = await browser.newPage();
+      
+      const html = `
+          <html>
+              <body>
+                  <h1>テストページ</h1>
+                  <p>これはAWS Lambda用の設定でテスト実行しています。</p>
+              </body>
+          </html>
+      `;
+      
+      await page.setContent(html);
+      
+      const pdf = await page.pdf({
+          format: 'a4',
+          printBackground: true
+      });
+      
+      console.log('PDF生成完了');
 
-  // BufferをBase64エンコード
-  const base64Data = buffer.toString('base64');
+      // PDF (Buffer) を Uint8Array に変換
+      const uint8Array = new Uint8Array(pdf);
 
-  // ブラウザを閉じる
-  await browser.close();  
-
-  // PDFデータをBase64エンコードして返す
-  return base64Data;
+      // Uint8Array を Base64 エンコードして返す
+      return Buffer.from(uint8Array).toString('base64');
+      
+  } catch (error) {
+      console.error('エラー:', error);
+      return ''; // エラー時は空文字列を返す
+  } finally {
+      if (browser !== null) {
+          await browser.close();
+      }
+  }
 } 
