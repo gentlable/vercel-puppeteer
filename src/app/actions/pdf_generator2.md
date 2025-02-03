@@ -1,7 +1,6 @@
 'use server';
 
-import chromium from '@sparticuz/chromium';
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';
 
 export async function generatePDF() {
   const isLambda = process.env.AWS_LAMBDA_FUNCTION_VERSION || process.env.VERCEL;
@@ -11,13 +10,12 @@ export async function generatePDF() {
   try {
         
     if (isLambda) {
-      console.log('await chromium.executablePath()', await chromium.executablePath());
         // Lambda/Vercel環境
         browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
+            headless: chromium.headless,    
         });
     } else {
         // ローカル環境
@@ -40,31 +38,23 @@ export async function generatePDF() {
       
       const html = `
           <html lang="ja" >
-            <base href="https://vercel-puppeteer-ashen.vercel.app/">
-            <style>
-              @font-face {
-                font-family: 'Noto Sans JP';
-                /* src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap'); */
-                src: url('/fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype');
-              }
-              body {
-                font-family: 'Noto Sans JP', sans-serif;
-              }
+              <style>
+                @font-face {
+                    font-family: 'IPAexGothic';
+                    src: url('https://cdn.jsdelivr.net/npm/@cjpatoilo/ipaexgothic-fonts@latest/fonts/ipaexg.ttf') format('truetype');
+                }
+                body {
+                    font-family: 'IPAexGothic', sans-serif;
+                }
             </style>
               <body>
                   <h1>テストページ1</h1>
-                  <p>これはAWS Lambda用の設定でテスト実行しています。onegaisimasu1</p>
-                  <p>日本語のテスト</p>
-                  <p>english test</p>
+                  <p>これはAWS Lambda用の設定でテスト実行しています。</p>
               </body>
           </html>
       `;
-            
-      // フォントの読み込みを待つ
-      await page.setContent(html, {
-        waitUntil: ['networkidle0', 'load', 'domcontentloaded']
-  });
-  
+      
+      await page.setContent(html);
       const pdf = await page.pdf({
           format: 'a4',
           printBackground: true
