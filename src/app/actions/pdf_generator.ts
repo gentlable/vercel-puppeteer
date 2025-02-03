@@ -4,6 +4,8 @@ import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
 
 export async function generatePDF() {
+
+  console.log('chromium',chromium);
   const isLambda = process.env.AWS_LAMBDA_FUNCTION_VERSION || process.env.VERCEL;
 
   let browser = null;
