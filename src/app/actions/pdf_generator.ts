@@ -39,6 +39,7 @@ export async function generatePDF() {
       
       const html = `
           <html lang="ja" >
+            <base href="https://vercel-puppeteer-ashen.vercel.app/">
             <style>
               @font-face {
                 font-family: 'Noto Sans JP';
@@ -51,7 +52,9 @@ export async function generatePDF() {
             </style>
               <body>
                   <h1>テストページ1</h1>
-                  <p>これはAWS Lambda用の設定でテスト実行しています。</p>
+                  <p>これはAWS Lambda用の設定でテスト実行しています。onegaisimasu1</p>
+                  <p>日本語のテスト</p>
+                  <p>english test</p>
               </body>
           </html>
       `;
