@@ -42,7 +42,8 @@ export async function generatePDF() {
             <style>
               @font-face {
                 font-family: 'Noto Sans JP';
-                src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+                /* src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap'); */
+                src: url('/fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype');
               }
               body {
                 font-family: 'Noto Sans JP', sans-serif;
